@@ -40,3 +40,20 @@ class BaseModel:
         new_dict['created_at'] = self.created_at.isoformat()
         new_dict['updated_at'] = self.updated_at.isoformat()
         return new_dict
+
+    @classmethod
+    def from_dict(cls, adict):
+        """Create an instance from a dictionary representation."""
+        # Remove '__class__' from the dictionary if it exists
+        class_name = adict.pop('__class__', None)
+        # Convert 'created_at' and 'updated_at' from string to datetime objects
+        cls = globals().get(class_name)
+        if cls is None:
+            raise ValueError(f"Class '{class_name}' not found")
+        #Convert to date time object
+        adict['created_at'] = datetime.strptime(
+            adict['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
+        adict['updated_at'] = datetime.strptime(
+            adict['updated_at'], '%Y-%m-%dT%H:%M:%S.%f')
+        # Create a new instance of the class using the modified dictionary
+        return cls(**adict)
