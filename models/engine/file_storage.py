@@ -1,0 +1,47 @@
+# models/engine/file_storage.py
+import json
+from models.base_model import BaseModel
+
+
+class FileStorage:
+    __file_path = "file.json"
+    __objects = {}
+
+    def all(self):
+        """Returns the dictionary __objects"""
+        return self.__objects
+
+    def new(self, obj):
+        """Sets in __objects the obj with key <obj class name>.id"""
+        if obj.__class__.__name__ == 'BaseModel':
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            self.__objects[key] = obj
+
+    def save(self):
+        """Serializes __objects to the JSON file"""
+        with open(self.__file_path, "w") as file:
+            obj_dict = {}
+            for key, obj in self.__objects.items():
+                # only include instances of basemodel
+                if isinstance(obj, BaseModel):
+                    obj_dict[key] = obj.to_dict()
+            json.dump(obj_dict, file)
+
+    def reload(self):
+        """Deserializes the JSON file to __objects"""
+        try:
+            with open(self.__file_path, "r") as file:
+                obj_dict = json.load(file)
+                for key, value in obj_dict.items():
+                    class_name, obj_id = key.split(".")
+                    cls = BaseModel if class_name == "BaseModel" else None
+                    # Add other model classes if needed
+                    if cls:
+                        obj = cls(**value)
+                        self.__objects[key] = obj
+        except FileNotFoundError:
+            self.__object = {}
+            pass
+        except json.JSONDecodeError:
+            self.__object = {}
+            pass

@@ -1,10 +1,11 @@
 # models/base_model.py
 import uuid
 from datetime import datetime
+# from models import storage
 
 
 class BaseModel:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, storage=None, *args, **kwargs):
         """Initialize BaseModel instance."""
         if kwargs:
             for key, value in kwargs.items():
@@ -19,6 +20,10 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
+        self.storage = storage # store storage instance
+
+        if not kwargs or '__class__' not in kwargs:
+            storage.new(self)
 
     def __str__(self):
         """Return string representation of BaseModel instance."""
@@ -31,7 +36,11 @@ class BaseModel:
     def save(self):
         """Update the public instance attribute updated_at
         with the current datetime."""
+        from models import storage
+        if self.storage:
+            self.storage.new(self)
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """Return a dictionary representation of BaseModel instance."""
@@ -50,7 +59,7 @@ class BaseModel:
         cls = globals().get(class_name)
         if cls is None:
             raise ValueError(f"Class '{class_name}' not found")
-        #Convert to date time object
+        # Convert to date time object
         adict['created_at'] = datetime.strptime(
             adict['created_at'], '%Y-%m-%dT%H:%M:%S.%f')
         adict['updated_at'] = datetime.strptime(
