@@ -1,4 +1,5 @@
 # models/base_model.py
+#from console import storage
 import uuid
 from datetime import datetime
 # from models import storage

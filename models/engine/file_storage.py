@@ -34,14 +34,17 @@ class FileStorage:
                 obj_dict = json.load(file)
                 for key, value in obj_dict.items():
                     class_name, obj_id = key.split(".")
-                    cls = BaseModel if class_name == "BaseModel" else None
-                    # Add other model classes if needed
-                    if cls:
+
+                    # dynamically import the appropriate class
+                    # based on class_name
+                    cls = globals().get(class_name, None)
+                    if cls and issubclass(cls, BaseModel):
                         obj = cls(**value)
                         self.__objects[key] = obj
+
         except FileNotFoundError:
-            self.__object = {}
+            self.__objects = {}
             pass
         except json.JSONDecodeError:
-            self.__object = {}
+            self.__objects = {}
             pass
