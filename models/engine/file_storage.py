@@ -25,7 +25,7 @@ class FileStorage:
                 # only include instances of basemodel
                 if isinstance(obj, BaseModel):
                     obj_dict[key] = obj.to_dict()
-            json.dump(obj_dict, file)
+            json.dump(obj_dict, file, default=lambda o: o.__dict__, indent=4)
 
     def reload(self):
         """Deserializes the JSON file to __objects"""

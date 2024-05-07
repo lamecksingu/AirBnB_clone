@@ -57,6 +57,8 @@ class HBNBCommand(cmd.Cmd):
                 obj = eval(my_list[0])(storage, **kwargs)
                 storage.new(obj)
             print(obj.id)
+            # print(f"Object created: {obj}")  # debug print
+            # print(f"Object ID: {obj.id}")  # debug print
             obj.save()
 
         except SyntaxError:
@@ -69,17 +71,25 @@ class HBNBCommand(cmd.Cmd):
         if not arg:
             print("** class name missing **")
             return
-        args = split(arg)
+        args = arg.split()
         try:
             if args[0] not in models.classes:
-                raise KeyError
+                print("** class doesn't exist **")
+                return
             if len(args) < 2:
                 print("** instance id missing **")
                 return
-            key = "{}.{}".format(args[0], args[1])
-            print(models.storage.all()[key])
-        except KeyError:
-            print("** no instance found **")
+            obj_id = args[1]
+            class_name = args[0]
+            key = "{}.{}".format(class_name, obj_id)
+            all_instances = models.storage.all()
+            for instance_key, instance in all_instances.items():
+                if key == instance_key:
+                    print(instance)
+                    return
+                print("** no instance found **")
+        except Exception as e:
+            print(e)
 
     def do_destroy(self, arg):
         """Deletes an instance based on the class name and id"""
