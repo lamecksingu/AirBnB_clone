@@ -1,5 +1,5 @@
 # models/base_model.py
-#from console import storage
+# from console import storage
 import uuid
 from datetime import datetime
 # from models import storage
@@ -23,7 +23,7 @@ class BaseModel:
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-        self.storage = storage # store storage instance
+        self.storage = storage  # store storage instance
 
         if not kwargs or '__class__' not in kwargs:
             storage.new(self)
