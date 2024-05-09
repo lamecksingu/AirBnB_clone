@@ -5,6 +5,8 @@ import cmd
 import models
 from models.base_model import BaseModel
 from shlex import split
+from models.user import User
+from models import storage
 
 
 # Create an instance of FileStorage
@@ -17,6 +19,10 @@ class HBNBCommand(cmd.Cmd):
     """Command interpreter class"""
 
     prompt = '(hbnb) '
+    classes = {
+            "BaseModel": BaseModel,
+            "User": User
+            }
 
     def do_quit(self, arg):
         """Quit command to exit the program"""

@@ -1,6 +1,7 @@
 # models/engine/file_storage.py
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -21,7 +22,7 @@ class FileStorage:
         """Serializes __objects to the JSON file"""
         with open(self.__file_path, "w") as file:
             obj_dict = {}
-            for key, obj in self.__objects.items():
+            for key, obj in FileStorage.__objects.items():
                 # only include instances of basemodel
                 if isinstance(obj, BaseModel):
                     obj_dict[key] = obj.to_dict()
@@ -38,7 +39,11 @@ class FileStorage:
                     # dynamically import the appropriate class
                     # based on class_name
                     cls = globals().get(class_name, None)
-                    if cls and issubclass(cls, BaseModel):
+                    if cls and (
+                            issubclass(cls, BaseModel
+                                or
+                                cls.__name__ == "User")):
+                        # obj = eval(class_name)(**value)
                         obj = cls(**value)
                         self.__objects[key] = obj
 
