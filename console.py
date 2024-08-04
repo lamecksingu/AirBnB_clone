@@ -5,7 +5,11 @@ import cmd
 import models
 from models.base_model import BaseModel
 from shlex import split
+from models.user import User
+from models import storage
 
+
+User.set_storage(storage)
 
 # Create an instance of FileStorage
 storage = FileStorage()
@@ -17,6 +21,10 @@ class HBNBCommand(cmd.Cmd):
     """Command interpreter class"""
 
     prompt = '(hbnb) '
+    classes = {
+            "BaseModel": BaseModel,
+            "User": User
+            }
 
     def do_quit(self, arg):
         """Quit command to exit the program"""
@@ -52,9 +60,11 @@ class HBNBCommand(cmd.Cmd):
                 kwargs[key] = value
 
             if kwargs == {}:
-                obj = eval(my_list[0])(storage)
+                # obj = eval(my_list[0])(storage)
+                obj = eval(my_list[0])(storage=storage)
             else:
-                obj = eval(my_list[0])(storage, **kwargs)
+                # obj = eval(my_list[0])(storage, **kwargs)
+                obj = eval(my_list[0])(storage=storage, **kwargs)
                 storage.new(obj)
             print(obj.id)
             # print(f"Object created: {obj}")  # debug print
