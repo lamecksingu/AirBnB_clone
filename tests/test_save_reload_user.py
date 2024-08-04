@@ -3,6 +3,9 @@ from models import storage
 from models.base_model import BaseModel
 from models.user import User
 
+
+# initialize the storage for user class
+User.set_storage(storage)
 all_objs = storage.all()
 print("-- Reloaded objects --")
 for obj_id in all_objs.keys():

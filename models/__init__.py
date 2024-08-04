@@ -9,3 +9,12 @@ classes = {
         }
 storage = FileStorage()
 storage.reload()
+
+print("Type of Storage before setting:", type(storage))
+print("Storage before setting:", storage)
+
+# Pass storage instance to User class
+User.set_storage(storage)
+
+print("Type of storage after setting:", type(User.get_storage()))
+print("Storage after setting:", User.get_storage())

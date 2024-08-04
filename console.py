@@ -9,6 +9,8 @@ from models.user import User
 from models import storage
 
 
+User.set_storage(storage)
+
 # Create an instance of FileStorage
 storage = FileStorage()
 # Load data from JSON file into memory
@@ -58,9 +60,11 @@ class HBNBCommand(cmd.Cmd):
                 kwargs[key] = value
 
             if kwargs == {}:
-                obj = eval(my_list[0])(storage)
+                # obj = eval(my_list[0])(storage)
+                obj = eval(my_list[0])(storage=storage)
             else:
-                obj = eval(my_list[0])(storage, **kwargs)
+                # obj = eval(my_list[0])(storage, **kwargs)
+                obj = eval(my_list[0])(storage=storage, **kwargs)
                 storage.new(obj)
             print(obj.id)
             # print(f"Object created: {obj}")  # debug print
